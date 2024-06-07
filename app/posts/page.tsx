@@ -46,7 +46,7 @@ export default function App(props: IAppProps) {
 
   return (
       data && data.map((post: Data) => {
-        return (<Post key={post.id} title={post.title} body={post.body} tags={post.tags} />)
+        return (<Post key={post.id} title={post.title} body={post.body} tags={post.tags} link={post.id}/>)
       }),
      );
   }

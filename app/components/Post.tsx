@@ -1,12 +1,14 @@
 import React from 'react'
 import Link from 'next/link'
+import { link } from 'fs'
 type Props = {
     title: string,
     body: string,
     tags: string[],
+    link: string,
 }
 
-export default function Post({title, body, tags}: Props) {
+export default function Post({title, body, tags, link}: Props) {
   return (
     <div className='flex items-center justify-center mb-5 mt-5'>  
             <div className="rounded-xl border p-5 shadow-md w-9/12 bg-white">
@@ -24,7 +26,7 @@ export default function Post({title, body, tags}: Props) {
             </div>
 
             <div className="mt-4 mb-6">
-            <Link href='/'> 
+            <Link href={`posts/${link}`}> 
                 <div className="mb-3 text-xl font-bold">{title}</div>
             </Link>
             <div className="text-sm text-neutral-600">{body}</div>
