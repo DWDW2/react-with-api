@@ -2,6 +2,7 @@
 import * as React from 'react';
 import axios from 'axios';
 import Post from '../components/Post';
+import { Skeleton } from '@mui/material';
 export interface IAppProps {
 }
 
@@ -40,7 +41,15 @@ export default function App(props: IAppProps) {
   }, []);
 
   if (!data) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Skeleton height={200} className='w-[70%] mr-auto ml-auto'/>
+        <Skeleton height={200} className='w-[70%] mr-auto ml-auto'/>
+        <Skeleton height={200} className='w-[70%] mr-auto ml-auto'/>
+        <Skeleton height={200} className='w-[70%] mr-auto ml-auto'/>
+        <Skeleton height={200} className='w-[70%] mr-auto ml-auto'/>
+      </div>
+    );
   };
 
 
