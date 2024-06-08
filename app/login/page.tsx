@@ -6,9 +6,8 @@ import { useRouter } from 'next/navigation'
 type Props = {}
 
 export default function Login({}: Props) {
-  const {isAuthenticated, login, logout, token} = useAuth()
+  const {isAuthenticated, login} = useAuth()
   const router = useRouter()
-  console.log(token)
   const loginHandler = () => {
     login()
     router.push('/')

@@ -6,8 +6,6 @@ import axios from 'axios';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  token: string;
-  refresh: string;
   login: () => void;
   logout: () => void;
 }
@@ -16,17 +14,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState('');
-  const [refresh, setRefresh] = useState('');
+
   const router = useRouter();
 
   const login = () => {
     axios.post('https://dummyjson.com/auth/login', {
-      firstName:"Michael",
-      lastName:"Williams",
+      username: "michaelw",
+      password: "michaelwpass",
       expiresInMins: 30 // optional, defaults to 60
     })
     .then(response => {
+      console.log(response.data)
       sessionStorage.setItem('Data token', response.data.token)
       sessionStorage.setItem('Refresh token', response.data.refreshToken);
     })
@@ -41,14 +39,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     axios.post('https://dummyjson.com/auth/refresh', {
       refreshToken: sessionStorage.getItem('Refresh token'),
       expiresInMins: 30 // optional, defaults to 60
-    },{
-    headers: {
-       'Content-Type': 'application/json'
-    }
     }
   ).then(response => {
-    setToken('');
-    setRefresh('');
+    sessionStorage.removeItem('Data token');
+    sessionStorage.removeItem('Refresh token');
   })
   .catch(error => {
     console.error(error);
@@ -70,7 +64,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [isAuthenticated, router]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, token, refresh }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

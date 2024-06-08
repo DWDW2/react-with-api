@@ -13,25 +13,30 @@ type Data = {
   userId: 121;
 }
 function App() {
-  const { token, refresh, logout } = useAuth();
+  const { logout } = useAuth();
   const [data, setData] = useState<Data>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log(token, `refresh  : ${refresh}`)
-  axios({
-    method: 'GET', 
-    url: 'https://dummyjson.com/auth/posts',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(response => {
-    return console.log(response.data.posts);
-  })
-  .catch(error => {
-    console.error(error);
-  });
+  instance.interceptors.request.use(
+    (config) => {
+      //import token from local storage
+      let token=localStorage.getItem('token') || '';
+      //configuring header
+      config.headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, //based on your project requirement
+        //or
+        "x-token" : JSON.parse(token), //based on your project requirement
+        params:{*params*},  //based on your project requirement
+        version: packageJson.version, //based on your project requirement
+       //other optional headers like Accept-Encoding, Accept-Language or any custom key values like project details.
+      };
+  
+      return config;
+    },
+    (error) => Promise.reject(error),
+  );
   return (
       <div className="App">
         <button onClick={() => logout()} >Logout</button>
