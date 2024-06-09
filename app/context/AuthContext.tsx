@@ -69,11 +69,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (!sessionStorage.getItem('isAuthenticated')) {
-      router.push('/login');
+    if (!isAuthenticated) {
+      setTimeout(()=>{router.push('/login')}, 2000);
     }
-  }, [isAuthenticated, router]);
-
+  }, [router, isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>

@@ -27,11 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className='flex flex-col min-h-screen'>
         <ThemeContextProvider >
           <AuthProvider>
             <Navbar />
-            {children}
+              {children}
             <Footer />
           </AuthProvider>
         </ThemeContextProvider>

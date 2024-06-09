@@ -19,6 +19,10 @@ const useStyles = makeStyles((theme: Theme) =>
     media: {
       height: 190,
     },
+    dark:{
+      backgroundColor: theme.palette.primary.dark,
+      color: theme.palette.primary.contrastText,
+    }
   }),
 );
 
