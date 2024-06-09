@@ -2,6 +2,7 @@
 import axiosInstance from '@/app/api/AxiosIntstance';
 import React, { useState, useEffect } from 'react';
 
+
 type Post = {
   id: number,
   title: string,
@@ -15,37 +16,30 @@ type Post = {
   userId: number
 };
 
+const getPostsFromLocalStorage = (): Post[] => {
+  const storedPosts = localStorage.getItem('posts');
+  return storedPosts ? JSON.parse(storedPosts) : [];
+};
+
+const savePostsToLocalStorage = (posts: Post[]) => {
+  localStorage.setItem('posts', JSON.stringify(posts));
+};
+
 type Props = {
   params: { id: string }
 };
 
 const PostPage: React.FC<Props> = ({ params }) => {
+  const [posts, setPosts] = useState<Post[]>(getPostsFromLocalStorage());
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    axiosInstance.get(`/auth/posts/${params.id}`)
-      .then(res => {
-        setPost(res.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setError('Error fetching post');
-        setLoading(false);
-      });
-  }, [params.id]);
-
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="flex justify-center items-center h-screen">{error}</div>;
-  }
-
+    const foundPost = posts.find(post => post.id === Number(params.id));
+    setPost(foundPost || null);
+  }, [params.id, posts]);
   return (
     <div className={`${isDarkMode ? 'dark' : ''}`}>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
