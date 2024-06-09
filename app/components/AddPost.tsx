@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 type Post = {
     id: number,
@@ -13,34 +13,26 @@ type Post = {
     views: number,
     userId: number
   };
-
-const getPostsFromLocalStorage = (): Post[] => {
-  if (typeof window !== 'undefined') { // Ensure localStorage is only accessed in the browser
+  
+  const getPostsFromLocalStorage = (): Post[] => {
     const storedPosts = localStorage.getItem('posts');
     return storedPosts ? JSON.parse(storedPosts) : [];
-  }
-  return [];
-};
-
-const savePostsToLocalStorage = (posts: Post[]) => {
-  if (typeof window !== 'undefined') { // Ensure localStorage is only accessed in the browser
+  };
+  
+  const savePostsToLocalStorage = (posts: Post[]) => {
     localStorage.setItem('posts', JSON.stringify(posts));
-  }
-};
+  };
+  
 
 const AddPost: React.FC = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  useEffect(() => {
-    setPosts(getPostsFromLocalStorage());
-  }, []);
+  const [posts, setPosts] = useState<Post[]>(getPostsFromLocalStorage());
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newPost = {
-      id: posts.length ? posts[posts.length - 1].id + 1 : 1, // Handle the case where posts array is empty
+      id: posts[posts.length-1].id+1, // Generate a unique ID
       title,
       body,
       tags: [],
