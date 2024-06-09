@@ -13,7 +13,7 @@ export default function Login({}: Props) {
     router.push('/')
   }
   return (
-    <div className="w-full max-w-xs mr-auto ml-auto mt-36 sm:w-1/2">
+    <div className="w-full max-w-xs mr-auto ml-auto mt-36 sm:w-1/2 dark:bg-">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">

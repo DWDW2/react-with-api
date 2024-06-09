@@ -1,8 +1,12 @@
 import axios from 'axios';
-
+import { useRouter } from 'next/router';
 const axiosInstance = axios.create({
   baseURL: 'https://dummyjson.com/',
+  headers:{
+    'Content-Type': 'application/json',
+  }
 });
+
 
 axiosInstance.interceptors.request.use(
   (config) => {

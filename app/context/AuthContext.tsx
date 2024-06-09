@@ -1,9 +1,7 @@
 'use client'
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Router } from 'next/router';
 import axios from 'axios';
-import { Skeleton } from '@mui/material';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -11,68 +9,53 @@ interface AuthContextType {
   logout: () => void;
 }
 
-type Data = {
-  id: number;
-  title: string;
-  body: string;
-  tags: string[];
-  reactions: {likes: number, dislikes: number};
-  views: number;
-  userId: 121;
-}
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   const router = useRouter();
 
-  const login = () => {
-    axios.post('https://dummyjson.com/auth/login', {
-      username: "michaelw",
-      password: "michaelwpass",
-      expiresInMins: 30 // optional, defaults to 60
-    })
-    .then(response => {
-      console.log(response.data)
-      sessionStorage.setItem('Data token', response.data.token)
+  const login = async () => {
+    try {
+      setIsAuthenticated(true);
+      const response = await axios.post('https://dummyjson.com/auth/login', {
+        username: "michaelw",
+        password: "michaelwpass",
+        expiresInMins: 30 // optional, defaults to 60
+      });
+      console.log(response.data);
+      sessionStorage.setItem('Data token', response.data.token);
       sessionStorage.setItem('Refresh token', response.data.refreshToken);
-    })
-    .catch(error => {
+      sessionStorage.setItem('isAuthenticated', 'true');
+    } catch (error) {
       console.error(error);
-    });
-    setIsAuthenticated(true);
-    sessionStorage.setItem('isAuthenticated', 'true');
+    }
   };
 
-  const logout = () => {
-    axios.post('https://dummyjson.com/auth/refresh', {
-      refreshToken: sessionStorage.getItem('Refresh token'),
-      expiresInMins: 30 // optional, defaults to 60
+  const logout = async () => {
+    console.log('logout');
+    try {
+      setIsAuthenticated(false);
+      await axios.post('https://dummyjson.com/auth/refresh', {
+        refreshToken: sessionStorage.getItem('Refresh token'),
+        expiresInMins: 30 // optional, defaults to 60
+      });
+      sessionStorage.removeItem('Data token');
+      sessionStorage.removeItem('Refresh token');
+      sessionStorage.removeItem('isAuthenticated');
+      router.push('/login');
+    } catch (error) {
+      console.error(error);
     }
-  ).then(response => {
-    sessionStorage.removeItem('Data token');
-    sessionStorage.removeItem('Refresh token');
-  })
-  .catch(error => {
-    console.error(error);
-  });
-    setIsAuthenticated(false);
-    sessionStorage.removeItem('isAuthenticated');
-    router.push('/login');
   };
 
   useEffect(() => {
     const authStatus = sessionStorage.getItem('isAuthenticated') === 'true';
     setIsAuthenticated(authStatus);
-  }, []);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setTimeout(()=>{router.push('/login')}, 2000);
+    if (!authStatus) {
+      router.push('/login');
     }
-  }, [router, isAuthenticated]);
+  }, [router]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
