@@ -1,7 +1,7 @@
 'use client'
 import axiosInstance from '@/app/api/AxiosIntstance';
-import { usePosts } from '@/app/context/PostContext';
 import React, { useState, useEffect } from 'react';
+
 
 type Post = {
   id: number,
@@ -16,23 +16,30 @@ type Post = {
   userId: number
 };
 
+const getPostsFromLocalStorage = (): Post[] => {
+  const storedPosts = localStorage.getItem('posts');
+  return storedPosts ? JSON.parse(storedPosts) : [];
+};
+
+const savePostsToLocalStorage = (posts: Post[]) => {
+  localStorage.setItem('posts', JSON.stringify(posts));
+};
+
 type Props = {
   params: { id: string }
 };
 
 const PostPage: React.FC<Props> = ({ params }) => {
-  const { posts } = usePosts()
+  const [posts, setPosts] = useState<Post[]>(getPostsFromLocalStorage());
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    setPost(posts[Number(params.id)-1])
-  }
-   );
-
-
+    const foundPost = posts.find(post => post.id === Number(params.id));
+    setPost(foundPost || null);
+  }, [params.id, posts]);
   return (
     <div className={`${isDarkMode ? 'dark' : ''}`}>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
