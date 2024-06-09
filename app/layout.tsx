@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "./components/layout/Navbar";
 import ThemeContextProvider from "./context/ThemeContext";
 import Footer from "./components/layout/Footer";
+import { PostProvider } from "./context/PostContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,13 +29,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className='flex flex-col min-h-screen'>
-        <ThemeContextProvider >
-          <AuthProvider>
-            <Navbar />
-              {children}
-            <Footer />
-          </AuthProvider>
-        </ThemeContextProvider>
+        <PostProvider>
+          <ThemeContextProvider >
+            <AuthProvider>
+                <Navbar />
+                  {children}
+                <Footer />
+            </AuthProvider>
+          </ThemeContextProvider>
+        </PostProvider>
         </body>
     </html>
   );

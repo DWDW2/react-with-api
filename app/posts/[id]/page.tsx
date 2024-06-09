@@ -1,5 +1,6 @@
 'use client'
 import axiosInstance from '@/app/api/AxiosIntstance';
+import { usePosts } from '@/app/context/PostContext';
 import React, { useState, useEffect } from 'react';
 
 type Post = {
@@ -20,31 +21,17 @@ type Props = {
 };
 
 const PostPage: React.FC<Props> = ({ params }) => {
+  const { posts } = usePosts()
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    axiosInstance.get(`/auth/posts/${params.id}`)
-      .then(res => {
-        setPost(res.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setError('Error fetching post');
-        setLoading(false);
-      });
-  }, [params.id]);
-
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    setPost(posts[Number(params.id)-1])
   }
+   );
 
-  if (error) {
-    return <div className="flex justify-center items-center h-screen">{error}</div>;
-  }
 
   return (
     <div className={`${isDarkMode ? 'dark' : ''}`}>
