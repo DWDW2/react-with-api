@@ -3,11 +3,22 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 import { useRouter } from 'next/navigation';
 import { Router } from 'next/router';
 import axios from 'axios';
+import { Skeleton } from '@mui/material';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   login: () => void;
   logout: () => void;
+}
+
+type Data = {
+  id: number;
+  title: string;
+  body: string;
+  tags: string[];
+  reactions: {likes: number, dislikes: number};
+  views: number;
+  userId: 121;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -62,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       router.push('/login');
     }
   }, [isAuthenticated, router]);
+
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
